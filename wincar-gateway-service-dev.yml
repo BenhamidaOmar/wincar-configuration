@@ -1,4 +1,3 @@
-    
 # Spring Boot Actuator
 management:
   endpoints:
@@ -22,19 +21,18 @@ management:
       enabled: true
       cache:
         time-to-live: 30s
-        
+
 # Swagger endpoint
 springfox:
   documentation:
     swagger:
       v2:
         path: /swagger
-         
-# hide null json property 
-jackson:
-   default-property-inclusion: NON_NULL
-   
+
 spring:
+  jackson:
+    default-property-inclusion: NON_NULL
+
   main:
     web-application-type: reactive
     allow-bean-definition-overriding: true
@@ -47,7 +45,6 @@ spring:
         response-timeout: 6000s
       default-filters:
         - DedupeResponseHeader=Access-Control-Allow-Origin
-        
       globalcors:
         cors-configurations:
           "[/**]":
@@ -55,42 +52,41 @@ spring:
             allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Content-Length, TOKEN, Authorization, sm_universalid"
             allowedMethods: "GET, POST, PATCH, PUT, DELETE, OPTIONS"
             maxAge: 3628800
-            
       discovery:
         locator:
           enabled: true
           lower-case-service-id: true
-          
       routes:
-      - id : wincar-sav
-        predicates:
-        - Path=/sav-api/**
-        filters:
-        - StripPrefix=1
-        uri: lb://avo-sav-service
-      - id : wincar-auth
-        predicates:
-        - Path=/auth-api/**
-        filters:
-        - StripPrefix=1
-        uri: lb://wincar-auth-service
-      - id : wincar-transverse
-        predicates:
-        - Path=/transverse-api/**
-        filters:
-        - StripPrefix=1
-        uri: lb://wincar-transverse-service
+        - id: wincar-sav
+          predicates:
+            - Path=/sav-api/**
+          filters:
+            - StripPrefix=1
+          uri: lb://wincar-sav-service
+        - id: wincar-auth
+          predicates:
+            - Path=/auth-api/**
+          filters:
+            - StripPrefix=1
+          uri: lb://wincar-auth-service
+        - id: wincar-transverse
+          predicates:
+            - Path=/transverse-api/**
+          filters:
+            - StripPrefix=1
+          uri: lb://wincar-transverse-service
 
 # profil DEV
 ---
 spring:
-  profiles: native
+  config:
+    activate:
+      on-profile: dev
 
 admin-registry:
- user: dev
- password: dev
+  user: dev
+  password: dev
 
-# the gateway is a Eureka client but is not registered as a Eureka instance
 eureka:
   instance:
     hostname: localhost
@@ -101,7 +97,5 @@ eureka:
     healthcheck:
       enabled: true
 
-# port server
 server:
   port: 9092
- 
