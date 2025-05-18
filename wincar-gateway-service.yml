@@ -3,7 +3,7 @@ info:
     name: WINCAR gateway application
     description: Microservice gateway pour WINCAR
     version: 1.0.0.0
-    
+
 # Version of environments 
 env:
   dev:
@@ -16,3 +16,42 @@ env:
     gorocco: G1R0C0
   prod:
     gorocco: G1R0C0
+
+spring:
+  jackson:
+    default-property-inclusion: NON_NULL
+  main:
+    web-application-type: reactive
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+
+  cloud:
+    gateway:
+      httpclient:
+        connect-timeout: 600000
+        response-timeout: 6000s
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Origin
+      globalcors:
+        cors-configurations:
+          "[/**]":
+            allowedOrigins: "*"
+            allowedHeaders: "Origin, X-Requested-With, Content-Type, Accept, Content-Length, TOKEN, Authorization, sm_universalid"
+            allowedMethods: "GET, POST, PATCH, PUT, DELETE, OPTIONS"
+            maxAge: 3628800
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: wincar-sav
+          predicates:
+            - Path=/sav-api/**
+          filters:
+            - StripPrefix=1
+          uri: lb://wincar-sav-service
+        - id: wincar-auth
+          predicates:
+            - Path=/auth-api/**
+          filters:
+            - StripPrefix
