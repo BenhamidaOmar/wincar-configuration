@@ -1,0 +1,84 @@
+info:
+  app:
+    name: WINCAR transverse service application
+    description: Microservice transverse pour Wincar
+    version: 1.0.0.0
+    
+# Version of environments 
+env:
+  local-host:
+    version: G1R0C0
+  dev:
+    version: G1R0C0
+  int:
+    version: G1R0C0
+  qualif:
+    version: G1R0C0
+  preprod:
+    version: G1R0C0
+  prod:
+    version: G1R0C0
+    
+# Spring Boot Actuator
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator
+      exposure:
+        include: "health,info,prometheus"
+    info:
+      git:
+        mode: full
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
+      cache:
+        time-to-live: 300s
+    prometheus:
+      enabled: true
+      cache:
+        time-to-live: 30s
+        
+# Swagger endpoint
+springfox:
+  documentation:
+    swagger:
+      v2:
+        path: /swagger
+   
+# profil DEV
+---
+spring:
+  profiles: dev
+
+# Database related properties
+  datasource:
+    url: jdbc:mariadb://localhost:3307/wincar_transverse_db
+    username: root
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate: 
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+admin-registry:
+ user: dev
+ password: dev
+ 
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://${admin-registry.user}:${admin-registry.password}@localhost:8761/eureka/
+    healthcheck:
+      enabled: true
+
+server:  
+  port: 8089

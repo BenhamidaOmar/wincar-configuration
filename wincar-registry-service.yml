@@ -1,0 +1,54 @@
+info:
+  app:
+    name: WINCAR annuaire application
+    description: Microservice annuaire pour WINCAR
+    version: 1.0.0.0
+
+# Spring Boot Actuator
+management:
+  endpoints:
+    enabled-by-default: false
+    web:
+      base-path: /actuator
+      exposure:
+        include: "health,info,prometheus"
+    info:
+      git:
+        mode: full
+  endpoint:
+    health:
+      enabled: true
+      show-details: always
+    info:
+      enabled: true
+      cache:
+        time-to-live: 300s
+    prometheus:
+      enabled: true
+      cache:
+        time-to-live: 30s
+
+
+  server:
+    enableSelfPreservation: true
+    eviction-interval-timer-in-ms: 5000
+
+eureka:
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+  server:
+    maxThreadsForPeerReplication: 0
+
+# profil DEV
+---
+spring:
+  profiles: dev
+  security:
+   user:
+     name: dev
+     password: dev
+
+#server port 
+server:  
+   port: 8761
